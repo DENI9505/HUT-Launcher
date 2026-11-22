@@ -1,6 +1,6 @@
 name: CatalogApp
 options:
-  bundleIdPrefix: com.yourname
+  bundleIdPrefix: app.leo6860
 configs:
   Release: release
 targets:
@@ -19,7 +19,7 @@ targets:
           - ".github"
     settings:
       base:
-        PRODUCT_BUNDLE_IDENTIFIER: com.yourname.catalogapp
+        PRODUCT_BUNDLE_IDENTIFIER: app.leo6860.hedgehog3731
         GENERATE_INFOPLIST_FILE: YES
         INFOPLIST_KEY_UIFileSharingEnabled: YES
         INFOPLIST_KEY_LSSupportsOpeningDocumentsInPlace: YES
