@@ -41,14 +41,19 @@ jobs:
           security list-keychain -d user -s "$KEYCHAIN_PATH"
           security set-key-partition-list -S apple-tool:,apple: -k "$KEYCHAIN_PASSWORD" "$KEYCHAIN_PATH"
 
+          security cms -D -i "$PP_PATH" > "$RUNNER_TEMP/profile.plist"
+          PP_UUID=$(/usr/libexec/PlistBuddy -c 'Print :UUID' "$RUNNER_TEMP/profile.plist")
+          PP_NAME=$(/usr/libexec/PlistBuddy -c 'Print :Name' "$RUNNER_TEMP/profile.plist")
+          TEAM_ID=$(/usr/libexec/PlistBuddy -c 'Print :TeamIdentifier:0' "$RUNNER_TEMP/profile.plist")
+
+          echo "PP_UUID=$PP_UUID" >> $GITHUB_ENV
+          echo "PP_NAME=$PP_NAME" >> $GITHUB_ENV
+          echo "TEAM_ID=$TEAM_ID" >> $GITHUB_ENV
+
           mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
-          cp "$PP_PATH" ~/Library/MobileDevice/Provisioning\ Profiles/
+          cp "$PP_PATH" ~/Library/MobileDevice/Provisioning\ Profiles/"$PP_UUID.mobileprovision"
 
       - name: Archive
-        env:
-          CODE_SIGN_IDENTITY: ${{ secrets.CODE_SIGN_IDENTITY }}
-          PROVISIONING_PROFILE_SPECIFIER: ${{ secrets.PROVISIONING_PROFILE_SPECIFIER }}
-          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
         run: |
           xcodebuild -project CatalogApp.xcodeproj \
             -scheme CatalogApp \
@@ -56,14 +61,11 @@ jobs:
             -archivePath $RUNNER_TEMP/CatalogApp.xcarchive \
             archive \
             CODE_SIGN_STYLE=Manual \
-            CODE_SIGN_IDENTITY="$CODE_SIGN_IDENTITY" \
-            PROVISIONING_PROFILE_SPECIFIER="$PROVISIONING_PROFILE_SPECIFIER" \
-            DEVELOPMENT_TEAM="$APPLE_TEAM_ID"
+            CODE_SIGN_IDENTITY="Apple Distribution" \
+            PROVISIONING_PROFILE_SPECIFIER="$PP_UUID" \
+            DEVELOPMENT_TEAM="$TEAM_ID"
 
       - name: Export IPA
-        env:
-          PROVISIONING_PROFILE_SPECIFIER: ${{ secrets.PROVISIONING_PROFILE_SPECIFIER }}
-          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
         run: |
           cat <<EOF > $RUNNER_TEMP/ExportOptions.plist
           <?xml version="1.0" encoding="UTF-8"?>
@@ -71,15 +73,15 @@ jobs:
           <plist version="1.0">
           <dict>
             <key>method</key>
-            <string>development</string>
+            <string>ad-hoc</string>
             <key>signingStyle</key>
             <string>manual</string>
             <key>teamID</key>
-            <string>$APPLE_TEAM_ID</string>
+            <string>$TEAM_ID</string>
             <key>provisioningProfiles</key>
             <dict>
               <key>app.leo6860.hedgehog3731</key>
-              <string>$PROVISIONING_PROFILE_SPECIFIER</string>
+              <string>$PP_NAME</string>
             </dict>
           </dict>
           </plist>
