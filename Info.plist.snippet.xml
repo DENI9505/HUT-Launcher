@@ -1,0 +1,20 @@
+<!--
+  Добавьте эти два ключа в Info.plist вашего Xcode-проекта (как Boolean = YES),
+  чтобы скачанные в Documents файлы были видны в приложении «Файлы».
+-->
+<key>UIFileSharingEnabled</key>
+<true/>
+<key>LSSupportsOpeningDocumentsInPlace</key>
+<true/>
+
+<!--
+  Если backend работает по обычному HTTP без TLS (например, тестовый сервер в локальной сети),
+  добавьте также исключение ATS — иначе iOS заблокирует запросы:
+-->
+<!--
+<key>NSAppTransportSecurity</key>
+<dict>
+    <key>NSAllowsArbitraryLoads</key>
+    <true/>
+</dict>
+-->
