@@ -35,6 +35,9 @@ jobs:
 
           echo -n "$BUILD_CERTIFICATE_BASE64" | base64 --decode -o "$CERT_PATH"
           echo -n "$BUILD_PROVISION_PROFILE_BASE64" | base64 --decode -o "$PP_PATH"
+          openssl pkcs12 -legacy -in "$CERT_PATH" -out "$RUNNER_TEMP/cert.pem" -nodes -passin pass:"$P12_PASSWORD"
+          openssl pkcs12 -legacy -export -in "$RUNNER_TEMP/cert.pem" -out "$CERT_PATH" -passout pass:"$P12_PASSWORD"
+
 
           security create-keychain -p "$KEYCHAIN_PASSWORD" "$KEYCHAIN_PATH"
           security set-keychain-settings -lut 21600 "$KEYCHAIN_PATH"
