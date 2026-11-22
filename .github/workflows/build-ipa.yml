@@ -92,8 +92,10 @@ jobs:
             -archivePath $RUNNER_TEMP/CatalogApp.xcarchive \
             -exportOptionsPlist $RUNNER_TEMP/ExportOptions.plist \
             -exportPath $RUNNER_TEMP/export
-            - name: Upload IPA
-              uses: actions/upload-artifact@v4
-              with:
-                name: CatalogApp-IPA
-                path: ${{ runner.temp }}/export/*.ipa
+
+      - name: Upload IPA
+        uses: actions/upload-artifact@v4
+        with:
+          name: CatalogApp-IPA
+          path: ${{ runner.temp }}/export/*.ipa
+          
