@@ -24,7 +24,7 @@ final class DownloadManager: NSObject, ObservableObject {
 
         let task = session.downloadTask(with: url)
         entryIdByTask[task.taskIdentifier] = entry.id
-        task.taskDescription = "\ (entry.title).ipa"
+        task.taskDescription = entry.title
         task.resume()
     }
 
