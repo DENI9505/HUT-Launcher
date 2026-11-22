@@ -59,6 +59,7 @@ jobs:
             -scheme CatalogApp \
             -configuration Release \
             -archivePath $RUNNER_TEMP/CatalogApp.xcarchive \
+            -destination 'generic/platform=iOS' \
             archive \
             CODE_SIGN_STYLE=Manual \
             CODE_SIGN_IDENTITY="iPhone Distribution" \
@@ -91,9 +92,8 @@ jobs:
             -archivePath $RUNNER_TEMP/CatalogApp.xcarchive \
             -exportOptionsPlist $RUNNER_TEMP/ExportOptions.plist \
             -exportPath $RUNNER_TEMP/export
-
-      - name: Upload IPA
-        uses: actions/upload-artifact@v4
-        with:
-          name: CatalogApp-IPA
-          path: ${{ runner.temp }}/export/*.ipa
+            - name: Upload IPA
+              uses: actions/upload-artifact@v4
+              with:
+                name: CatalogApp-IPA
+                path: ${{ runner.temp }}/export/*.ipa
